@@ -8,9 +8,6 @@ class Car:
         self.x=xi
         self.y=yi
         self.tracks=[]
-        self.R=randint(0,255)
-        self.G=randint(0,255)
-        self.B=randint(0,255)
         self.done=False
         self.state='0'
         self.age=0
@@ -49,7 +46,7 @@ class Car:
     def timedOut(self):
         return self.done
 
-    def going_UP(self, mid_start, mid_end):
+    def going_UP(self, mid_end):
         if len(self.tracks)>=2:
             if self.state=='0':
                 if self.tracks[-1][1]<mid_end and self.tracks[-2][1]>=mid_end:
@@ -63,7 +60,7 @@ class Car:
         else:
             return False
 
-    def going_DOWN(self,mid_start,mid_end):
+    def going_DOWN(self,mid_start):
         if len(self.tracks)>=2:
             if self.state=='0':
                 if self.tracks[-1][1]>mid_start and self.tracks[-2][1]<=mid_start:
@@ -91,7 +88,4 @@ class MultiCar:
         self.x=xi
         self.y=yi
         self.tracks=[]
-        self.R=randint(0,255)
-        self.G=randint(0,255)
-        self.B=randint(0,255)
         self.done=False

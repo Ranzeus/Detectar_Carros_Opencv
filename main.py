@@ -18,7 +18,7 @@ area_frame = altura*largura
 
 #AREA QUE O CARRO OCUPA NO FRAME
 area_carro_min = area_frame/400
-area_carro_max = area_frame/50
+area_carro_max = area_frame/100
 
 
 print("area_carro_min: ",area_carro_min)
@@ -29,9 +29,6 @@ print("area_carro_max: ",area_carro_max)
 line_up=int(2*(altura/5))
 line_down=int(3*(altura/5))
 ############################################
-
-# print("line_down:",line_up)
-# print("line_down:",line_down)
 
 ######################################################
 up_limit=int(1*(altura/5)) #LIMITE ACIMA
@@ -138,10 +135,7 @@ while(video.isOpened()):
                         # print("UP: ", i.going_UP(line_down,line_up))
                         # print("DOWN: ",i.going_DOWN(line_down,line_up))
 
-                        if i.going_UP(line_down,line_up) == True:
-                            cnt_up += 1
-
-                        elif i.going_DOWN(line_down,line_up) == True:
+                        if i.going_DOWN(line_down) == True:
                             cnt_down += 1
 
                         break
