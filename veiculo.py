@@ -34,7 +34,7 @@ class Car:
     def getY(self):  #for y coordinate
         return self.y
 
-    def updateCoords(self, xn, yn):
+    def attCoords(self, xn, yn):
         self.age = 0
         self.tracks.append([self.x, self.y])
         self.x = xn
@@ -46,21 +46,7 @@ class Car:
     def timedOut(self):
         return self.done
 
-    def going_UP(self, mid_end):
-        if len(self.tracks)>=2:
-            if self.state=='0':
-                if self.tracks[-1][1]<mid_end and self.tracks[-2][1]>=mid_end:
-                    state='1'
-                    self.dir='up'
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
-
-    def going_DOWN(self,mid_start):
+    def indo_p_baixo(self, mid_start):
         if len(self.tracks)>=2:
             if self.state=='0':
                 if self.tracks[-1][1]>mid_start and self.tracks[-2][1]<=mid_start:
@@ -74,7 +60,7 @@ class Car:
         else:
             return False
 
-    def age_one(self):
+    def ano_um(self):
         self.age+=1
         if self.age>self.max_age:
             self.done=True

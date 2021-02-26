@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import veiculo
-import time
+# import time
 
 # criando um subtrator
 backSub = cv2.createBackgroundSubtractorMOG2(detectShadows=True)
@@ -17,44 +17,26 @@ altura = video.get(4)
 area_frame = altura*largura
 
 #AREA QUE O CARRO OCUPA NO FRAME
-area_carro_min = area_frame/400
+area_carro_min = area_frame/450
 area_carro_max = area_frame/100
 
+# print("area_carro_min: ",area_carro_min)
+# print("area_carro_max: ",area_carro_max)
 
-print("area_carro_min: ",area_carro_min)
-print("area_carro_max: ",area_carro_max)
-
-###########################################
 # LINHAS
-line_up=int(2*(altura/5))
-line_down=int(3*(altura/5))
-############################################
+linha_sup=int(2 * (altura / 5))
+linha_inf=int(3 * (altura / 5))
 
-######################################################
-up_limit=int(1*(altura/5)) #LIMITE ACIMA
-down_limit=int(4*(altura/5)) #LIMITE INFERIOR
-######################################################
-
-# CONTADORES DE VEICULOS SUBINDO E DESCENDO
-cnt_up=0
-cnt_down=0
-
+#LIMITE SUPERIOR
+limite_sup=int(1 * (altura / 5))
 #LIMITE INFERIOR
-limit_infe=int(4*(altura/5))
+limite_inf=int(4 * (altura / 5))
+
+# CONTADOR DE VEICULOS
+cnt_carros=0
 
 #COR DA LINHA INFERIOR
 cor_linha_infe=(255,0,255)
-
-#COORDENADAS DE PONTOS DENTRO DA IMAGEM PARA DESENHAR A LINHA
-pt1 =  [0, limit_infe]
-pt2 =  [largura, limit_infe]
-
-################################################################
-#LINHA USANDO AS COORDENADAS DOS PONTOS
-pts_L1 = np.array([pt1,pt2], np.int32)
-#Adiciona um espano entra a primeira e a ultima linha da matriz
-pts_L1 = pts_L1.reshape((-1,1,2))
-################################################################
 
 #MATRIZ DE 1s DE TAMANHO 3X3(ABRIR)
 kernelzinho = np.ones((3,3),np.uint8)
@@ -86,7 +68,7 @@ while(video.isOpened()):
 
     # PERCORRENDO ARRAY DE CARROS
     for i in cars:
-        i.age_one()
+        i.ano_um()
 
     """
     Cada quadro é usado tanto para calcular a máscara do primeiro plano quanto para atualizar o plano de fundo. Se você 
@@ -112,7 +94,8 @@ while(video.isOpened()):
         area = cv2.contourArea(contorno)
 
         #Verificação do tamnho da área para eliminar os lixos indentificados
-        if area > area_carro_min and area < area_carro_max:
+        if area > area_carro_min:
+        # if area > area_carro_min and area < area_carro_max:
 
             #MEDIA PONDERADA DA INTENSIDADE DOS PIXELS, USADA PARA ENCONTRAR O CENTRO DO CONTORNO
             m = cv2.moments(contorno)
@@ -121,29 +104,26 @@ while(video.isOpened()):
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
 
-            (x,y,l,a) = cv2.boundingRect(contorno)
+            x,y,l,a=cv2.boundingRect(contorno)
             # print("x=",x,"y=",y,"l=",l,"a=",a)
 
             new = True
-            if cy in range(up_limit, down_limit):
+            if cy in range(linha_sup, limite_inf):
                 for i in cars:
 
                     if abs(x - i.getX()) <=l and abs(y - i.getY()) <= a:
                         new = False
-                        i.updateCoords(cx, cy)
+                        i.attCoords(cx, cy)
 
-                        # print("UP: ", i.going_UP(line_down,line_up))
                         # print("DOWN: ",i.going_DOWN(line_down,line_up))
 
-                        if i.going_DOWN(line_down) == True:
-                            cnt_down += 1
+                        if i.indo_p_baixo(linha_inf) == True:
+                            cnt_carros += 1
 
                         break
 
                     if i.getState() == '1':
-                        if i.getDir() == 'down' and i.getY() > down_limit:
-                            i.setDone()
-                        elif i.getDir() == 'up' and i.getY() < up_limit:
+                        if i.getDir() == 'down' and i.getY() > limite_inf:
                             i.setDone()
                     if i.timedOut():
                         index = cars.index(i)
@@ -161,11 +141,10 @@ while(video.isOpened()):
                 cv2.rectangle(frame, (x, y), (x + l, y + a), (0, 0, 255), 1)
 
     #MONTANDO STRING PARA IMPRIMIR
-    str_down = 'DOWN: ' + str(cnt_down)
-    str_up = 'UP: ' + str(cnt_up)
+    str_down = 'CARROS: ' + str(cnt_carros)
 
     #IMPRIMINDO O CONTADOR
-    cv2.putText(frame, str_down, (10, 90), font, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(frame, str_down, (10, 15), font, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
     cv2.imshow('Frame', frame)
     cv2.imshow('Mask', mask)
 
