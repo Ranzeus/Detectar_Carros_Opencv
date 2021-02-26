@@ -41,7 +41,7 @@ cor_linha_infe=(255,0,255)
 #MATRIZ DE 1s DE TAMANHO 3X3(ABRIR)
 kernelzinho = np.ones((3,3),np.uint8)
 #MATRIZ DE 1s DE TAMANHO 17X17(FECHAR)
-kernelzao = np.ones((17,17),np.uint8)
+kernelzao = np.ones((11,11),np.uint8)
 
 ################################
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -151,3 +151,6 @@ while(video.isOpened()):
     keyboard = cv2.waitKey(30)
     if keyboard == 'q' or keyboard == 27:
         break
+
+video.release()
+cv2.destroyAllWindows()
